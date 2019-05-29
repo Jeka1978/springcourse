@@ -1,10 +1,23 @@
 package my_spring;
 
+import javax.annotation.PostConstruct;
+
 /**
  * @author Evgeny Borisov
  */
 public class CleanerImpl implements Cleaner {
+
+    @InjectRandomInt(min = 3, max = 5)
+    private int repeat;
+
+    @PostConstruct
+    public void init() {
+        System.out.println("repeat = " + repeat);
+    }
+
     public void clean() {
-        System.out.println("VVVVVVVVVVvvvvvvvvvvvvvvvvvv");
+        for (int i = 0; i < repeat; i++) {
+            System.out.println("VVVVVVVVVVvvvvvvvvvvvvvvvvvv");
+        }
     }
 }

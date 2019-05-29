@@ -3,9 +3,16 @@ package my_spring;
 import com.github.javafaker.Faker;
 import com.github.javafaker.GameOfThrones;
 import lombok.SneakyThrows;
+import org.reflections.Reflections;
 
+import javax.annotation.PostConstruct;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Evgeny Borisov
@@ -13,12 +20,21 @@ import java.lang.reflect.Field;
 public class ObjectFactory {
     private static ObjectFactory ourInstance = new ObjectFactory();
     private Config config = new JavaConfig();
+    private List<ObjectConfigurator> configurators = new ArrayList<>();
+    private Reflections scanner = new Reflections("my_spring");
 
     public static ObjectFactory getInstance() {
         return ourInstance;
     }
 
+    @SneakyThrows
     private ObjectFactory() {
+        Set<Class<? extends ObjectConfigurator>> classes = scanner.getSubTypesOf(ObjectConfigurator.class);
+        for (Class<? extends ObjectConfigurator> aClass : classes) {
+            if (!Modifier.isAbstract(aClass.getModifiers())) {
+                configurators.add(aClass.newInstance());
+            }
+        }
     }
 
 
@@ -29,18 +45,14 @@ public class ObjectFactory {
         }
         T t = type.newInstance();
 
+        configurators.forEach(objectConfigurator -> objectConfigurator.configure(t));
 
-        Field[] fields = type.getDeclaredFields();
-        for (Field field : fields) {
-            if (field.isAnnotationPresent(InjectRandomName.class)) {
-                GameOfThrones gameOfThrones = new Faker().gameOfThrones();
-                String name = gameOfThrones.character();
-                field.setAccessible(true);
-                field.set(t,name);
+        Method[] methods = type.getMethods();
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(PostConstruct.class)) {
+                method.invoke(t);
             }
         }
-
-
         return t;
     }
 
