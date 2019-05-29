@@ -25,7 +25,7 @@ public class MessageProducer {
     @Scheduled(fixedDelay = 500)
     public void produceMsg() {
         String quote = faker.gameOfThrones().quote();
-        int i = random.nextInt(2) + 1;
+        int i = random.nextInt(3) + 1;
         Message message = Message.builder().content(quote).deliveryType(String.valueOf(i)).build();
         distributer.sendMessage(message);
     }

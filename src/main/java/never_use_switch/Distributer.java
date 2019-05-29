@@ -1,26 +1,33 @@
 package never_use_switch;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * @author Evgeny Borisov
  */
 @Service
 public class Distributer {
+
+    @Autowired
+    private Map<String,Sender> map;
+
+
+
+
     public void sendMessage(Message msg) {
         String type = msg.getDeliveryType();
-        switch (type) {
-            case "1":
-                //40 lines of code
-                System.out.println("sms was sent with text: "+msg.getContent());
-                break;
-            case "2":
-
-                // 35 lines of code
-                System.out.println("whatsapp was sent with text: "+msg.getContent());
-
-            //todo  remove switch
+        Sender sender = map.get(type);
+        if (sender == null) {
+            throw new RuntimeException(type + " not supported yet");
         }
+        sender.send(msg);
+
+
+
+
     }
 }
