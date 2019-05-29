@@ -1,5 +1,6 @@
 package my_spring;
 
+import javax.annotation.PostConstruct;
 import java.rmi.dgc.DGC;
 
 /**
@@ -12,7 +13,8 @@ public class IRobot {
     private Cleaner cleaner;
 
 
-    public IRobot() {
+    @PostConstruct
+    public void init() {
         System.out.println(cleaner.getClass().getName());
     }
 
