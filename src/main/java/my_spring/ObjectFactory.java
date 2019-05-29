@@ -6,6 +6,9 @@ import lombok.SneakyThrows;
 import org.reflections.Reflections;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.InvocationHandler;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.lang.invoke.SerializedLambda;
@@ -20,6 +23,8 @@ import java.util.Set;
 /**
  * @author Evgeny Borisov
  */
+@Service
+@Lazy
 public class ObjectFactory {
     private static ObjectFactory ourInstance = new ObjectFactory();
     private Config config = new JavaConfig();
