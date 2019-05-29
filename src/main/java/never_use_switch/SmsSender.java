@@ -5,10 +5,15 @@ import org.springframework.stereotype.Component;
 /**
  * @author Evgeny Borisov
  */
-@Component("1")
+@Component
 public class SmsSender implements Sender {
     @Override
     public void send(Message message) {
         System.out.println("sms was sent: "+message.getContent());
+    }
+
+    @Override
+    public String myCode() {
+        return "2";
     }
 }

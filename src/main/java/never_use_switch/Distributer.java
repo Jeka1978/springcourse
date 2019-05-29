@@ -1,10 +1,12 @@
 package never_use_switch;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.toMap;
 
 /**
  * @author Evgeny Borisov
@@ -12,11 +14,11 @@ import java.util.Map;
 @Service
 public class Distributer {
 
-    @Autowired
-    private Map<String,Sender> map;
+    private Map<String, Sender> map;
 
-
-
+    public Distributer(List<Sender> senders) {
+        map = senders.stream().collect(toMap(Sender::myCode, Function.identity()));
+    }
 
     public void sendMessage(Message msg) {
         String type = msg.getDeliveryType();
@@ -25,8 +27,6 @@ public class Distributer {
             throw new RuntimeException(type + " not supported yet");
         }
         sender.send(msg);
-
-
 
 
     }
