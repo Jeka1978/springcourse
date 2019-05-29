@@ -17,4 +17,10 @@ public class ElfTest {
         Assert.assertNotEquals(0, elf.getPower());
         Assert.assertNotEquals(0, elf.getSpeed());
     }
+    @Test
+    public void injectRandomNameIsWorking() {
+        Elf elf = ObjectFactory.getInstance().createObject(Elf.class);
+        System.out.println(elf);
+        Assert.assertNotNull( elf.getName());
+    }
 }
